@@ -27,19 +27,32 @@ void Renderer::Render(Scene* pScene) const
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
 
-	auto aspectRatio = m_Width / m_Height;
+	auto aspectRatio = m_Width / float(m_Height);
 
 	for (int px{}; px < m_Width; ++px)
 	{
-		double xss = ((2 * (px + 0.5) / m_Width) - 1) * aspectRatio;
+		double xcs = ((2 * (px + 0.5) / m_Width) - 1) * aspectRatio;
 
 		for (int py{}; py < m_Height; ++py)
 		{
-			double yss = 1 - (2 * (py + 0.5) / m_Height);
+			double ycs = 1 - (2 * (py + 0.5) / m_Height);
 
-			Ray hitRay{ { 0, 0, 0}, { xss * Vector3::UnitX + yss * Vector3::UnitY + Vector3::UnitZ} };
+			auto rayDirection = xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ;
+			Ray hitRay{ { 0, 0, 0}, rayDirection.Normalized() };
 
-			ColorRGB finalColor{ hitRay.direction.x, hitRay.direction.y, hitRay.direction.z };
+			HitRecord closestHit{};
+			ColorRGB finalColor{};
+
+			Sphere testSphere{ { 0, 0, 100.f }, 50.f, 0 };
+
+			GeometryUtils::HitTest_Sphere(testSphere, hitRay, closestHit);
+
+			if (closestHit.didHit)
+			{
+				finalColor = materials[closestHit.materialIndex]->Shade();
+			}
+
+			//ColorRGB finalColor{ hitRay.direction.x, hitRay.direction.y, hitRay.direction.z };
 			finalColor.MaxToOne();
 
 			m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
