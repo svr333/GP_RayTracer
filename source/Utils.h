@@ -31,7 +31,7 @@ namespace dae
 			}
 
 			auto hitPoint = ray.origin + t * ray.direction;
-			hitRecord = HitRecord{ hitPoint, (hitPoint - sphere.origin) / sphere.radius, t, true };
+			hitRecord = HitRecord{ hitPoint, (hitPoint - sphere.origin) / sphere.radius, t, true, sphere.materialIndex };
 			return true;
 		}
 

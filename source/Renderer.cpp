@@ -38,14 +38,12 @@ void Renderer::Render(Scene* pScene) const
 			double ycs = 1 - (2 * (py + 0.5) / m_Height);
 
 			auto rayDirection = xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ;
-			Ray hitRay{ { 0, 0, 0}, rayDirection.Normalized() };
+			Ray viewRay{ { 0, 0, 0}, rayDirection.Normalized() };
 
 			HitRecord closestHit{};
 			ColorRGB finalColor{};
 
-			Sphere testSphere{ { 0, 0, 100.f }, 50.f, 0 };
-
-			GeometryUtils::HitTest_Sphere(testSphere, hitRay, closestHit);
+			pScene->GetClosestHit(viewRay, closestHit);
 
 			if (closestHit.didHit)
 			{

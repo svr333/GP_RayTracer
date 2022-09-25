@@ -28,8 +28,17 @@ namespace dae {
 
 	void dae::Scene::GetClosestHit(const Ray& ray, HitRecord& closestHit) const
 	{
-		//todo W1
-		assert(false && "No Implemented Yet!");
+		for (size_t i = 0; i < m_SphereGeometries.size(); i++)
+		{
+			HitRecord newHit{};
+			GeometryUtils::HitTest_Sphere(m_SphereGeometries[i], ray, newHit);
+
+			// if hit and object is closer
+			if (newHit.didHit && closestHit.t > newHit.t)
+			{
+				closestHit = newHit;
+			}
+		}
 	}
 
 	bool Scene::DoesHit(const Ray& ray) const
