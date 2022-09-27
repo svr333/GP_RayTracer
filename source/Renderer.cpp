@@ -28,7 +28,7 @@ void Renderer::Render(Scene* pScene) const
 	auto& lights = pScene->GetLights();
 
 	auto aspectRatio = m_Width / float(m_Height);
-	auto FOV = tan((M_PI / 2) / 2);
+	auto FOV = tan(camera.fovAngle / 2);
 
 	for (int px{}; px < m_Width; ++px)
 	{
@@ -39,7 +39,7 @@ void Renderer::Render(Scene* pScene) const
 			double ycs = (1 - (2 * (py + 0.5) / m_Height)) * FOV;
 
 			auto rayDirection = xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ;
-			Ray viewRay{ { 0, 0, 0}, rayDirection.Normalized() };
+			Ray viewRay{ camera.origin, rayDirection.Normalized() };
 
 			HitRecord closestHit{};
 			ColorRGB finalColor{};
@@ -51,7 +51,6 @@ void Renderer::Render(Scene* pScene) const
 				finalColor = materials[closestHit.materialIndex]->Shade();
 			}
 
-			//ColorRGB finalColor{ hitRay.direction.x, hitRay.direction.y, hitRay.direction.z };
 			finalColor.MaxToOne();
 
 			m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
