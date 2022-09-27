@@ -31,7 +31,7 @@ namespace dae
 
 		Matrix cameraToWorld{};
 		const float camVelocity = 5.0f;
-		const float angleVelocity = 0.01f;
+		const float angleVelocity = 0.09f;
 
 		Matrix CalculateCameraToWorld()
 		{
@@ -73,6 +73,23 @@ namespace dae
 			if (pKeyboardState[SDL_SCANCODE_D])
 			{
 				origin += cameraToWorld.GetAxisX() * camVelocity * deltaTime;
+			}
+
+			Matrix rotationMatrix = { { 1,0,0,0 },
+										{ 0,1,0,0 },
+										{ 0,0,1,0 },
+										{ 0,0,0,1 } };
+
+			// Rotate logic
+			if (mouseState & SDL_BUTTON_RMASK)
+			{
+				totalPitch -= mouseY * angleVelocity * deltaTime;
+
+				totalYaw -= mouseX * angleVelocity * deltaTime;
+				
+				rotationMatrix = rotationMatrix.CreateRotation(totalPitch, totalYaw, 0);
+				forward = rotationMatrix.TransformVector(Vector3::UnitZ);
+				forward.Normalize();
 			}
 
 			CalculateCameraToWorld();
