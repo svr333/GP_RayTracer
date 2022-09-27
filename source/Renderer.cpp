@@ -30,6 +30,8 @@ void Renderer::Render(Scene* pScene) const
 	auto aspectRatio = m_Width / float(m_Height);
 	auto FOV = tan(camera.fovAngle / 2);
 
+	const Matrix cameraToWorld = camera.CalculateCameraToWorld();
+
 	for (int px{}; px < m_Width; ++px)
 	{
 		double xcs = ((2 * (px + 0.5) / m_Width) - 1) * aspectRatio * FOV;
@@ -38,7 +40,7 @@ void Renderer::Render(Scene* pScene) const
 		{
 			double ycs = (1 - (2 * (py + 0.5) / m_Height)) * FOV;
 
-			auto rayDirection = xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ;
+			auto rayDirection = cameraToWorld.TransformVector(xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ);
 			Ray viewRay{ camera.origin, rayDirection.Normalized() };
 
 			HitRecord closestHit{};
