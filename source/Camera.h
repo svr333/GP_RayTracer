@@ -30,7 +30,8 @@ namespace dae
 		float totalYaw{0.f};
 
 		Matrix cameraToWorld{};
-		float camVelocity = 5;
+		const float camVelocity = 5.0f;
+		const float angleVelocity = 0.01f;
 
 		Matrix CalculateCameraToWorld()
 		{
