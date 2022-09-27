@@ -28,14 +28,15 @@ void Renderer::Render(Scene* pScene) const
 	auto& lights = pScene->GetLights();
 
 	auto aspectRatio = m_Width / float(m_Height);
+	auto FOV = tan((M_PI / 2) / 2);
 
 	for (int px{}; px < m_Width; ++px)
 	{
-		double xcs = ((2 * (px + 0.5) / m_Width) - 1) * aspectRatio;
+		double xcs = ((2 * (px + 0.5) / m_Width) - 1) * aspectRatio * FOV;
 
 		for (int py{}; py < m_Height; ++py)
 		{
-			double ycs = 1 - (2 * (py + 0.5) / m_Height);
+			double ycs = (1 - (2 * (py + 0.5) / m_Height)) * FOV;
 
 			auto rayDirection = xcs * Vector3::UnitX + ycs * Vector3::UnitY + Vector3::UnitZ;
 			Ray viewRay{ { 0, 0, 0}, rayDirection.Normalized() };
