@@ -5,6 +5,7 @@
 
 #include "Math.h"
 #include "Timer.h"
+#include <iostream>
 
 namespace dae
 {
@@ -26,8 +27,8 @@ namespace dae
 		Vector3 up{Vector3::UnitY};
 		Vector3 right{Vector3::UnitX};
 
-		float totalPitch{0.f};
-		float totalYaw{0.f};
+		float totalPitch { 0.0f };
+		float totalYaw { 0.0f };
 
 		Matrix cameraToWorld{};
 		const float camVelocity = 5.0f;

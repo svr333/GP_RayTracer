@@ -51,6 +51,19 @@ void Renderer::Render(Scene* pScene) const
 			if (closestHit.didHit)
 			{
 				finalColor = materials[closestHit.materialIndex]->Shade();
+
+				// hard shadows
+				auto lights = pScene->GetLights();
+
+				for (size_t i = 0; i < lights.size(); i++)
+				{
+					auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin);
+
+					if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
+					{
+						finalColor *= 0.5f;
+					}
+				}
 			}
 
 			finalColor.MaxToOne();
