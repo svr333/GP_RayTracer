@@ -23,6 +23,8 @@ Renderer::Renderer(SDL_Window * pWindow) :
 
 void Renderer::Render(Scene* pScene) const
 {
+	auto useHardShadows = false;
+
 	Camera& camera = pScene->GetCamera();
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
@@ -52,16 +54,19 @@ void Renderer::Render(Scene* pScene) const
 			{
 				finalColor = materials[closestHit.materialIndex]->Shade();
 
-				// hard shadows
-				auto lights = pScene->GetLights();
-
-				for (size_t i = 0; i < lights.size(); i++)
+				if (useHardShadows)
 				{
-					auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin);
+					// hard shadows
+					auto lights = pScene->GetLights();
 
-					if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
+					for (size_t i = 0; i < lights.size(); i++)
 					{
-						finalColor *= 0.5f;
+						auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin);
+
+						if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
+						{
+							finalColor *= 0.5f;
+						}
 					}
 				}
 			}
