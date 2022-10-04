@@ -181,4 +181,26 @@ namespace dae {
 		AddPointLight({ 0.0f, 5.0f, -5.0f }, 70.0f, colors::White);
 	}
 #pragma endregion
+
+#pragma region SCENE W3
+	void Scene_W3::Initialize()
+	{
+		m_Camera.origin = { 0.0f, 1.0f, -5.0f };
+		m_Camera.fovAngle = 45.0f;
+
+		constexpr unsigned char matId_Solid_Red = 0;
+		const unsigned char matId_Solid_Blue = AddMaterial(new Material_SolidColor{ colors::Blue });
+		const unsigned char matId_Solid_Yellow = AddMaterial(new Material_SolidColor{ colors::Yellow });
+
+		// Planes
+		AddPlane({ -5.f, 0.f, 0.f }, { 1.f, 0.f, 0.f }, matId_Solid_Yellow);
+
+		// Spheres
+		AddSphere({ -0.75f, 1.0f, 0.0f }, 1.0f, matId_Solid_Red);
+		AddSphere({ 0.75f, 1.0f, 0.0f }, 1.0f, matId_Solid_Blue);
+
+		// Lights
+		AddPointLight({ 0.0f, 5.0f, 5.0f }, 25.0f, colors::White);
+	}
+#pragma endregion
 }
