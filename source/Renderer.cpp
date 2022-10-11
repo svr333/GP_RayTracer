@@ -52,11 +52,24 @@ void Renderer::Render(Scene* pScene) const
 
 			if (closestHit.didHit)
 			{
-				finalColor = materials[closestHit.materialIndex]->Shade();
+				//finalColor = materials[closestHit.materialIndex]->Shade();
+
+				auto lights = pScene->GetLights();
+
+				for (size_t i = 0; i < lights.size(); i++)
+				{
+					auto radiance = LightUtils::GetRadiance(lights[i], closestHit.origin);
+					auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin).Normalized();
+					auto dot = Vector3::Dot(closestHit.normal, direction);
+
+					if (dot >= 0)
+					{
+						finalColor += radiance * dot;
+					}
+				}
 
 				if (useHardShadows)
 				{
-					// hard shadows
 					auto lights = pScene->GetLights();
 
 					for (size_t i = 0; i < lights.size(); i++)
