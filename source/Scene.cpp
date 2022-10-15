@@ -199,18 +199,20 @@ namespace dae {
 		m_Camera.fovAngle = 45.0f;
 
 		constexpr unsigned char matId_Solid_Red = 0;
-		const unsigned char matId_Solid_Blue = AddMaterial(new Material_SolidColor{ colors::Blue });
-		const unsigned char matId_Solid_Yellow = AddMaterial(new Material_SolidColor{ colors::Yellow });
+		const unsigned char matLambert_Red = AddMaterial(new Material_Lambert{ colors::Red, 1.0f });
+		const unsigned char matLambert_Blue = AddMaterial(new Material_Lambert{ colors::Blue, 1.0f });
+		const unsigned char matLambert_Yellow = AddMaterial(new Material_Lambert{ colors::Yellow, 1.0f });
 
 		// Spheres
-		AddSphere({ -0.75f, 1.0f, 0.0f }, 1.0f, matId_Solid_Red);
-		AddSphere({ 0.75f, 1.0f, 0.0f }, 1.0f, matId_Solid_Blue);
+		AddSphere({ -0.75f, 1.0f, 0.0f }, 1.0f, matLambert_Red);
+		AddSphere({ 0.75f, 1.0f, 0.0f }, 1.0f, matLambert_Blue);
 
 		// Planes
-		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matId_Solid_Yellow);
+		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_Yellow);
 
 		// Lights
 		AddPointLight({ 0.0f, 5.0f, 5.0f }, 25.0f, colors::White);
+		AddPointLight({ 0.0f, 2.5f, -5.0f }, 25.0f, colors::White);
 	}
 #pragma endregion
 }

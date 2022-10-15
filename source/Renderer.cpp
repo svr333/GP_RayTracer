@@ -23,8 +23,6 @@ Renderer::Renderer(SDL_Window * pWindow) :
 
 void Renderer::Render(Scene* pScene) const
 {
-	auto useHardShadows = false;
-
 	Camera& camera = pScene->GetCamera();
 	auto& materials = pScene->GetMaterials();
 	auto& lights = pScene->GetLights();
@@ -50,38 +48,39 @@ void Renderer::Render(Scene* pScene) const
 
 			pScene->GetClosestHit(viewRay, closestHit);
 
-			if (closestHit.didHit)
+			// no hit, color black
+			if (!closestHit.didHit)
 			{
-				//finalColor = materials[closestHit.materialIndex]->Shade();
+				m_pBufferPixels[px + (py * m_Width)] = SDL_MapRGB(m_pBuffer->format,
+					static_cast<uint8_t>(finalColor.r * 255),
+					static_cast<uint8_t>(finalColor.g * 255),
+					static_cast<uint8_t>(finalColor.b * 255));
 
-				auto lights = pScene->GetLights();
+				continue;
+			}
 
-				for (size_t i = 0; i < lights.size(); i++)
+			auto lights = pScene->GetLights();
+
+			for (size_t i = 0; i < lights.size(); i++)
+			{
+				auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin).Normalized();
+
+				// obstacle in way, light does not give direct hit, also results in giving shadows
+				if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
 				{
-					auto radiance = LightUtils::GetRadiance(lights[i], closestHit.origin);
-					auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin).Normalized();
-					auto dot = Vector3::Dot(closestHit.normal, direction);
-
-					if (dot >= 0)
-					{
-						finalColor += radiance * dot;
-					}
+					continue;
 				}
 
-				if (useHardShadows)
+				auto dot = Vector3::Dot(closestHit.normal, direction);
+
+				if (dot < 0)
 				{
-					auto lights = pScene->GetLights();
-
-					for (size_t i = 0; i < lights.size(); i++)
-					{
-						auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin);
-
-						if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
-						{
-							finalColor *= 0.5f;
-						}
-					}
+					continue;
 				}
+
+				auto radiance = LightUtils::GetRadiance(lights[i], closestHit.origin);
+
+				finalColor += radiance * materials[closestHit.materialIndex]->Shade() * dot;
 			}
 
 			finalColor.MaxToOne();
