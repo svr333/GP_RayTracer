@@ -80,7 +80,7 @@ void Renderer::Render(Scene* pScene) const
 
 				auto radiance = LightUtils::GetRadiance(lights[i], closestHit.origin);
 
-				finalColor += radiance * materials[closestHit.materialIndex]->Shade() * dot;
+				finalColor += radiance * materials[closestHit.materialIndex]->Shade(closestHit, direction, viewRay.direction) * dot;
 			}
 
 			finalColor.MaxToOne();

@@ -202,10 +202,11 @@ namespace dae {
 		const unsigned char matLambert_Red = AddMaterial(new Material_Lambert{ colors::Red, 1.0f });
 		const unsigned char matLambert_Blue = AddMaterial(new Material_Lambert{ colors::Blue, 1.0f });
 		const unsigned char matLambert_Yellow = AddMaterial(new Material_Lambert{ colors::Yellow, 1.0f });
+		const unsigned char phong = AddMaterial(new Material_LambertPhong{ colors::Blue, 1.0f, 1.0f, 60.0f });
 
 		// Spheres
 		AddSphere({ -0.75f, 1.0f, 0.0f }, 1.0f, matLambert_Red);
-		AddSphere({ 0.75f, 1.0f, 0.0f }, 1.0f, matLambert_Blue);
+		AddSphere({ 0.75f, 1.0f, 0.0f }, 1.0f, phong);
 
 		// Planes
 		AddPlane({ 0.f, 0.f, 0.f }, { 0.f, 1.f, 0.f }, matLambert_Yellow);
