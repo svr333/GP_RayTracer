@@ -66,7 +66,7 @@ void Renderer::Render(Scene* pScene) const
 				auto direction = LightUtils::GetDirectionToLight(lights[i], closestHit.origin).Normalized();
 
 				// obstacle in way, light does not give direct hit, also results in giving shadows
-				if (pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
+				if (m_ShadowsEnabled && pScene->DoesHit({ closestHit.origin + closestHit.normal * 0.1f, direction.Normalized(), 0.0001f, direction.Magnitude() }))
 				{
 					continue;
 				}
@@ -100,4 +100,9 @@ void Renderer::Render(Scene* pScene) const
 bool Renderer::SaveBufferToImage() const
 {
 	return SDL_SaveBMP(m_pBuffer, "RayTracing_Buffer.bmp");
+}
+
+void Renderer::CycleLightingMode()
+{
+	m_CurrentLightingMode = (LightingMode)((int)m_CurrentLightingMode + 1 % (int)LightingMode::Max);
 }
