@@ -48,8 +48,7 @@ namespace dae
 		 */
 		static ColorRGB FresnelFunction_Schlick(const Vector3& h, const Vector3& v, const ColorRGB& f0)
 		{
-			//todo: W3
-			return {};
+			return { f0 + (ColorRGB { 1,1,1 } - f0) * powf((1 - Vector3::Dot(h, v)), 5) };
 		}
 
 		/**
@@ -61,8 +60,10 @@ namespace dae
 		 */
 		static float NormalDistribution_GGX(const Vector3& n, const Vector3& h, float roughness)
 		{
-			//todo: W3
-			return {};
+			float alphaSquared = roughness * roughness * roughness * roughness;
+			float dotSquared = Vector3::Dot(n, h) * Vector3::Dot(n, h);
+
+			return { alphaSquared / (float(M_PI) * powf(dotSquared * (alphaSquared - 1) + 1, 2)) };
 		}
 
 
@@ -75,8 +76,10 @@ namespace dae
 		 */
 		static float GeometryFunction_SchlickGGX(const Vector3& n, const Vector3& v, float roughness)
 		{
-			//todo: W3
-			return {};
+			float dot = Vector3::Dot(n, v);
+			float k = powf(roughness + 1, 2) / 8;
+
+			return { dot / (dot * (1 - k) + k) };
 		}
 
 		/**
@@ -89,9 +92,9 @@ namespace dae
 		 */
 		static float GeometryFunction_Smith(const Vector3& n, const Vector3& v, const Vector3& l, float roughness)
 		{
-			//todo: W3
-			return {};
-		}
+			float k = powf(roughness + 1, 2) / 8;
 
+			return { GeometryFunction_SchlickGGX(n, v, k) * GeometryFunction_SchlickGGX(n, l, k) };
+		}
 	}
 }
