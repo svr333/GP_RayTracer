@@ -80,7 +80,23 @@ void Renderer::Render(Scene* pScene) const
 
 				auto radiance = LightUtils::GetRadiance(lights[i], closestHit.origin);
 
-				finalColor += radiance * materials[closestHit.materialIndex]->Shade(closestHit, direction, viewRay.direction) * dot;
+				switch (m_CurrentLightingMode)
+				{
+				case dae::Renderer::LightingMode::ObservedArea:
+					finalColor += { dot, dot, dot };
+					break;
+				case dae::Renderer::LightingMode::Radiance:
+					finalColor += radiance * dot;
+					break;
+				case dae::Renderer::LightingMode::BRDF:
+					finalColor += materials[closestHit.materialIndex]->Shade(closestHit, direction, viewRay.direction);
+					break;
+				case dae::Renderer::LightingMode::Combined:
+					finalColor += radiance * materials[closestHit.materialIndex]->Shade(closestHit, direction, viewRay.direction) * dot;
+					break;
+				default:
+					break;
+				}
 			}
 
 			finalColor.MaxToOne();
@@ -104,5 +120,6 @@ bool Renderer::SaveBufferToImage() const
 
 void Renderer::CycleLightingMode()
 {
-	m_CurrentLightingMode = (LightingMode)((int)m_CurrentLightingMode + 1 % (int)LightingMode::Max);
+	m_CurrentLightingMode = (LightingMode)((int)m_CurrentLightingMode + 1);
+	m_CurrentLightingMode = (LightingMode)((int)m_CurrentLightingMode % (int)LightingMode::Max);
 }

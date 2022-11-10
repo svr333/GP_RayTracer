@@ -217,11 +217,11 @@ namespace dae {
 
 		// Spheres
 		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GrayRoughMetal);
-		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GrayMediumMetal);
-		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GraySmoothMetal);
-		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GrayRoughPlastic);
-		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GrayRoughPlastic);
-		AddSphere({ -1.75f, 1.0f, 0.0f }, 0.75f, matCT_GraySmoothPlastic);
+		AddSphere({ 0.0f, 1.0f, 0.0f }, 0.75f, matCT_GrayMediumMetal);
+		AddSphere({ 1.75f, 1.0f, 0.0f }, 0.75f, matCT_GraySmoothMetal);
+		AddSphere({ -1.75f, 3.0f, 0.0f }, 0.75f, matCT_GrayRoughPlastic);
+		AddSphere({ 0.0f, 3.0f, 0.0f }, 0.75f, matCT_GrayRoughPlastic);
+		AddSphere({ 1.75f, 3.0f, 0.0f }, 0.75f, matCT_GraySmoothPlastic);
 
 		// Lights
 		AddPointLight({ 0.0f, 5.0f, 5.0f }, 50.0f, { 1.0f, 0.61f, 0.45f });
