@@ -73,7 +73,7 @@ namespace dae
 		{
 			auto dot = Vector3::Dot(triangle.normal, ray.direction);
 
-			if (ignoreHitRecord == true)
+			if (!ignoreHitRecord)
 			{
 				switch (triangle.cullMode)
 				{

@@ -266,7 +266,7 @@ namespace dae {
 
 		// Triangle
 		auto triangle = Triangle{ { -0.75f, 0.5f, 0.0f }, { -0.75f, 2.0f, 0.0f }, { 0.75f, 0.5f, 0.0f } };
-		triangle.cullMode = TriangleCullMode::NoCulling;
+		triangle.cullMode = TriangleCullMode::FrontFaceCulling;
 		triangle.materialIndex = matLambert_White;
 
 		m_Triangles.emplace_back(triangle);
