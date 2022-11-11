@@ -71,9 +71,69 @@ namespace dae
 		//TRIANGLE HIT-TESTS
 		inline bool HitTest_Triangle(const Triangle& triangle, const Ray& ray, HitRecord& hitRecord, bool ignoreHitRecord = false)
 		{
-			//todo W5
-			assert(false && "No Implemented Yet!");
-			return false;
+			auto dot = Vector3::Dot(triangle.normal, ray.direction);
+
+			if (ignoreHitRecord == true)
+			{
+				switch (triangle.cullMode)
+				{
+					case dae::TriangleCullMode::FrontFaceCulling:
+						if (dot < 0)
+						{
+							return false;
+						}
+						break;
+					case dae::TriangleCullMode::BackFaceCulling:
+						if (dot > 0)
+						{
+							return false;
+						}
+						break;
+					case dae::TriangleCullMode::NoCulling:
+					default:
+						break;
+				}
+			}
+
+			auto L = triangle.v0 + triangle.v1 + triangle.v2 / 3 - ray.origin;
+			auto t = Vector3::Dot(L, triangle.normal) / Vector3::Dot(ray.direction, triangle.normal);
+
+			// out of range of ray
+			if (t < ray.min || t > ray.max)
+			{
+				return false;
+			}
+
+			// get point in plane of triangle
+			auto p = ray.origin + t * ray.direction;
+
+			// check if point is on correct side of each of the triangles side
+			auto edgeA = triangle.v1 - triangle.v0;
+			auto pointToSide = p - triangle.v0;
+
+			if (Vector3::Dot(triangle.normal, Vector3::Cross(edgeA, pointToSide)) < 0)
+			{
+				return false;
+			}
+
+			auto edgeB = triangle.v2 - triangle.v1;
+			pointToSide = p - triangle.v1;
+
+			if (Vector3::Dot(triangle.normal, Vector3::Cross(edgeB, pointToSide)) < 0)
+			{
+				return false;
+			}
+
+			auto edgeC = triangle.v0 - triangle.v2;
+			pointToSide = p - triangle.v2;
+
+			if (Vector3::Dot(triangle.normal, Vector3::Cross(edgeC, pointToSide)) < 0)
+			{
+				return false;
+			}
+
+			hitRecord = HitRecord{ p, triangle.normal, t, true, triangle.materialIndex };
+			return true;
 		}
 
 		inline bool HitTest_Triangle(const Triangle& triangle, const Ray& ray)
