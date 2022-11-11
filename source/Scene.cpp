@@ -268,7 +268,8 @@ namespace dae {
 		pMesh = AddTriangleMesh(TriangleCullMode::NoCulling, matLambert_White);
 		Utils::ParseOBJ("Resources/simple_cube.obj", pMesh->positions, pMesh->normals, pMesh->indices);
 
-		//pMesh->Scale({ });
+		//pMesh->Translate({ 0, 1, 0 });
+		//pMesh->Scale({ 2, 2, 2 });
 
 		// Light
 		AddPointLight(Vector3{ 0.f, 5.f, 5.f }, 50.f, ColorRGB{ 1.f, 0.61f, 0.45f }); // Backlight
@@ -340,7 +341,7 @@ namespace dae {
 
 	void Scene_W4_Bunny::Initialize()
 	{
-		sceneName = "Reference Scene";
+		sceneName = "Bunny Scene";
 		m_Camera.origin = { 0.f, 3.f, -9.f };
 		m_Camera.fovAngle = 45.f;
 

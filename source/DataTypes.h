@@ -153,7 +153,7 @@ namespace dae
 			//Transform Normals (normals > transformedNormals)
 			for (size_t i = 0; i < normals.size(); i++)
 			{
-				transformedNormals.emplace_back(finalTransform.TransformPoint(normals[i]));
+				transformedNormals.emplace_back(finalTransform.TransformPoint(normals[i].Normalized()));
 			}
 		}
 	};

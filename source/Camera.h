@@ -36,13 +36,10 @@ namespace dae
 
 		Matrix CalculateCameraToWorld()
 		{
-			const Vector3 camRight{ (Vector3::Cross(up, forward)).Normalized()};
+			const Vector3 camRight{ (Vector3::Cross(up, forward)).Normalized() };
 			const Vector3 camUp{ (Vector3::Cross(forward, right)).Normalized() };
 
-			cameraToWorld = Matrix{ { camRight.x, camRight.y, camRight.z, 0 },
-									{ camUp.x, camUp.y, camUp.z, 0 },
-									{ forward.x, forward.y, forward.z, 0 },
-									{ origin.x, origin.y, origin.z, 1 } };
+			cameraToWorld = Matrix{ camRight, camUp, forward, origin };
 
 			return cameraToWorld;
 		}
@@ -76,21 +73,13 @@ namespace dae
 				origin += cameraToWorld.GetAxisX() * camVelocity * deltaTime;
 			}
 
-			Matrix rotationMatrix = { { 1,0,0,0 },
-										{ 0,1,0,0 },
-										{ 0,0,1,0 },
-										{ 0,0,0,1 } };
-
 			// Rotate logic
 			if (mouseState & SDL_BUTTON_RMASK)
 			{
 				totalPitch -= mouseY * angleVelocity * deltaTime;
-
 				totalYaw -= mouseX * angleVelocity * deltaTime;
-				
-				rotationMatrix = rotationMatrix.CreateRotation(totalPitch, totalYaw, 0);
-				forward = rotationMatrix.TransformVector(Vector3::UnitZ);
-				forward.Normalize();
+
+				forward = Matrix::CreateRotation(totalPitch, totalYaw, 0.0f).TransformVector(Vector3::UnitZ);
 			}
 
 			CalculateCameraToWorld();
